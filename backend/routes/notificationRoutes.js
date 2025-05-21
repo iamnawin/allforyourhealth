@@ -1,30 +1,39 @@
 const express = require('express');
 const router = express.Router();
+const { protect } = require('../middleware/authMiddleware');
 const notificationController = require('../controllers/notificationController');
-const { authenticateJWT } = require('../middleware/authMiddleware');
 
-// All routes require authentication
-router.use(authenticateJWT);
+// Get all notifications for the authenticated user
+router.get('/', protect, notificationController.getNotifications);
 
-// Get all notifications
-router.get('/', notificationController.getNotifications);
-
-// Get unread notifications
-router.get('/unread', notificationController.getUnreadNotifications);
+// Get unread notifications for the authenticated user
+router.get('/unread', protect, notificationController.getUnreadNotifications);
 
 // Get a single notification
-router.get('/:id', notificationController.getNotification);
+router.get('/:id', protect, notificationController.getNotification);
 
 // Create a new notification
-router.post('/', notificationController.createNotification);
+router.post('/', protect, notificationController.createNotification);
+
+// Send notification via multiple channels (in-app, push, WhatsApp)
+router.post('/send', protect, notificationController.sendNotification);
 
 // Mark notification as read
-router.put('/:id/read', notificationController.markNotificationAsRead);
+router.put('/:id/read', protect, notificationController.markNotificationAsRead);
 
 // Mark all notifications as read
-router.put('/read-all', notificationController.markAllNotificationsAsRead);
+router.put('/read-all', protect, notificationController.markAllNotificationsAsRead);
 
 // Delete a notification
-router.delete('/:id', notificationController.deleteNotification);
+router.delete('/:id', protect, notificationController.deleteNotification);
+
+// Update notification settings
+router.put('/settings', protect, notificationController.updateNotificationSettings);
+
+// Register device token for push notifications
+router.post('/register-device', protect, notificationController.registerDeviceToken);
+
+// Unregister device token
+router.post('/unregister-device', protect, notificationController.unregisterDeviceToken);
 
 module.exports = router;
