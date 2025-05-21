@@ -11,7 +11,8 @@ import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
 // Main Screens
-import AICaretakerScreen from '../screens/AICaretakerScreen';
+import HomeScreen from '../screens/HomeScreen';
+import AIGrannyScreen from '../screens/AIGrannyScreen';
 import MedicationsScreen from '../screens/MedicationsScreen';
 import DietPlanScreen from '../screens/DietPlanScreen';
 import VitalsScreen from '../screens/VitalsScreen';
@@ -27,6 +28,8 @@ import ShareHealthRecordScreen from '../screens/ShareHealthRecordScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const AuthStack = createStackNavigator();
+const HomeStack = createStackNavigator();
+const AIGrannyStack = createStackNavigator();
 const MedicationsStack = createStackNavigator();
 const DietPlanStack = createStackNavigator();
 const VitalsStack = createStackNavigator();
@@ -43,6 +46,30 @@ const AuthNavigator = () => {
       <AuthStack.Screen name="Register" component={RegisterScreen} />
       <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </AuthStack.Navigator>
+  );
+};
+
+const HomeStackNavigator = () => {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen 
+        name="HomeMain" 
+        component={HomeScreen} 
+        options={{ title: 'Home' }}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
+const AIGrannyStackNavigator = () => {
+  return (
+    <AIGrannyStack.Navigator>
+      <AIGrannyStack.Screen 
+        name="AIGrannyMain" 
+        component={AIGrannyScreen} 
+        options={{ title: 'AI Granny' }}
+      />
+    </AIGrannyStack.Navigator>
   );
 };
 
@@ -164,16 +191,14 @@ const MainTabNavigator = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'AICaretaker') {
-            iconName = focused ? 'robot' : 'robot-outline';
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'AIGranny') {
+            iconName = focused ? 'human-female-girl' : 'human-female-girl';
           } else if (route.name === 'Medications') {
             iconName = focused ? 'pill' : 'pill';
           } else if (route.name === 'DietPlan') {
             iconName = focused ? 'food-apple' : 'food-apple-outline';
-          } else if (route.name === 'Vitals') {
-            iconName = focused ? 'heart-pulse' : 'heart-outline';
-          } else if (route.name === 'Progress') {
-            iconName = focused ? 'chart-line' : 'chart-line-variant';
           } else if (route.name === 'HealthRecords') {
             iconName = focused ? 'file-document' : 'file-document-outline';
           } else if (route.name === 'More') {
@@ -188,12 +213,11 @@ const MainTabNavigator = () => {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="AICaretaker" component={AICaretakerScreen} options={{ title: 'AI Caretaker' }} />
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen name="AIGranny" component={AIGrannyStackNavigator} options={{ title: 'AI Granny' }} />
       <Tab.Screen name="Medications" component={MedicationsStackNavigator} />
       <Tab.Screen name="DietPlan" component={DietPlanStackNavigator} options={{ title: 'Diet Plan' }} />
-      <Tab.Screen name="Vitals" component={VitalsStackNavigator} />
-      <Tab.Screen name="Progress" component={ProgressStackNavigator} />
-      <Tab.Screen name="HealthRecords" component={HealthRecordsStackNavigator} options={{ title: 'Health Records' }} />
+      <Tab.Screen name="HealthRecords" component={HealthRecordsStackNavigator} options={{ title: 'Records' }} />
       <Tab.Screen name="More" component={MoreStackNavigator} />
     </Tab.Navigator>
   );
@@ -205,6 +229,8 @@ const MoreStackNavigator = () => {
   return (
     <MoreStack.Navigator>
       <MoreStack.Screen name="MoreOptions" component={MoreOptionsScreen} options={{ title: 'More' }} />
+      <MoreStack.Screen name="Vitals" component={VitalsStackNavigator} options={{ headerShown: false }} />
+      <MoreStack.Screen name="Progress" component={ProgressStackNavigator} options={{ headerShown: false }} />
       <MoreStack.Screen name="Profile" component={ProfileStackNavigator} options={{ headerShown: false }} />
       <MoreStack.Screen name="Notifications" component={NotificationsStackNavigator} options={{ headerShown: false }} />
       <MoreStack.Screen name="Reports" component={ReportsStackNavigator} options={{ headerShown: false }} />
@@ -215,6 +241,22 @@ const MoreStackNavigator = () => {
 const MoreOptionsScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, padding: 16 }}>
+      <TouchableOpacity 
+        style={styles.moreOption}
+        onPress={() => navigation.navigate('Vitals')}
+      >
+        <Icon name="heart-pulse" size={24} color="#6200ee" />
+        <Text style={styles.moreOptionText}>Vitals</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.moreOption}
+        onPress={() => navigation.navigate('Progress')}
+      >
+        <Icon name="chart-line" size={24} color="#6200ee" />
+        <Text style={styles.moreOptionText}>Progress</Text>
+      </TouchableOpacity>
+      
       <TouchableOpacity 
         style={styles.moreOption}
         onPress={() => navigation.navigate('Profile')}
